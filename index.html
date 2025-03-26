@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randomizzatore Crazy Time</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #a7c7e7; /* Colore di sfondo azzurro */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            transition: background-color 0.5s ease;
+        }
+        button {
+            background-color: #ff6f61;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 15px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #ff4d3b;
+        }
+        #result {
+            font-size: 2.5em;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        img {
+            max-width: 220px;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+        #puntateHistory {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            text-align: left;
+        }
+        #puntateHistory h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        #puntateHistory ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        #puntateHistory li {
+            margin: 10px 0;
+            background-color: #ff6f61;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+        label, input {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        #realGameButton {
+            background-color: #FFD700; /* Oro */
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        #realGameButton:hover {
+            background-color: #e6c200;
+        }
+        /* Stile per il pulsante "Torna al Randomizzatore" */
+        #backToRandomButton {
+            background-color: #3498db;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        #backToRandomButton:hover {
+            background-color: #2980b9;
+        }
+
+        /* Media Query per dispositivi mobili */
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 10px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+            img {
+                max-width: 180px;
+            }
+            #puntateHistory {
+                width: 90%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Inserisci l'immagine al posto del titolo -->
+    <img src="crazytime.png" alt="Randomizzatore Crazy Time">
+
+    <label for="puntate">Quante puntate vuoi fare?:</label>
+    <input type="number" id="puntate" min="1" max="100" value="1">
+
+    <button onclick="startGame()">Inizia il gioco (Randomizzatore)</button>
+    <button id="realGameButton" onclick="startRealGame()">Vai al gioco reale</button>
+
+    <div id="result"></div>
+
+    <button onclick="restartGame()">Gioca di nuovo</button>
+
+    <!-- Sezione per lo storico delle puntate -->
+    <div id="puntateHistory">
+        <h3>Storico delle Puntate:</h3>
+        <ul id="historyList"></ul>
+    </div>
+
+    <!-- Pulsante per tornare al gioco randomizzatore -->
+    <button id="backToRandomButton" onclick="goBackToRandom()">Torna al randomizzatore</button>
+
+    <script>
+        let history = []; // Array per memorizzare lo storico delle puntate
+        let isRealGame = false; // Flag per determinare la modalità di gioco
+
+        // Funzione per fare una pausa (sleep)
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Funzione per animare la slot
+        async function animazioneSlot() {
+            let resultDiv = document.getElementById('result');
+            let animazione = ['1', '2', '3', '4', '5', '6', '7', '8'];
+            for (let i = 0; i < 5; i++) {
+                let num = animazione[Math.floor(Math.random() * animazione.length)];
+                resultDiv.innerHTML = num;
+                await sleep(200);
+            }
+        }
+
+        // Funzione per la modalità randomizzatore
+        async function startGame() {
+            let npuntate = parseInt(document.getElementById('puntate').value);
+            let resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "Inizia il gioco...";
+
+            for (let i = 0; i < npuntate; i++) {
+                await animazioneSlot();
+                let puntata = Math.floor(Math.random() * 8) + 1;
+
+                let imageSrc = "";
+                let altText = "";
+
+                if (puntata === 3) {
+                    imageSrc = "cinque.PNG";
+                    altText = "5";
+                } else if (puntata === 4) {
+                    imageSrc = "dieci.PNG";
+                    altText = "10";
+                } else if (puntata === 5) {
+                    imageSrc = "coinflip.png";
+                    altText = "COIN FLIP";
+                } else if (puntata === 6) {
+                    imageSrc = "pachinko.png";
+                    altText = "PACHINKO";
+                } else if (puntata === 7) {
+                    imageSrc = "cashhunt.png";
+                    altText = "CASH HUNT";
+                } else if (puntata === 8) {
+                    imageSrc = "crazybonus.png";
+                    altText = "CRAZY TIME";
+                } else if (puntata === 2) {
+                    imageSrc = "due.PNG";
+                    altText = "2";
+                } else if (puntata === 1) {
+                    imageSrc = "uno.PNG";
+                    altText = "1";
+                }
+
+                resultDiv.innerHTML = `<img src="${imageSrc}" alt="${altText}">`;
+                await sleep(1000); // Pausa per mostrare il risultato
+
+                // Aggiungi la puntata allo storico
+                history.push(altText);
+                updateHistory();
+            }
+        }
+
+        // Funzione per la modalità gioco reale con probabilità
+        async function startRealGame() {
+            document.body.style.backgroundColor = '#D4AF37'; // Imposta lo sfondo dorato
+            let npuntate = parseInt(document.getElementById('puntate').value);
+            let resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "Inizia il gioco reale...";
+
+            const probList = [
+                { name: "1", prob: 21 / 54 },
+                { name: "2", prob: 13 / 54 },
+                { name: "5", prob: 7 / 54 },
+                { name: "10", prob: 4 / 54 },
+                { name: "Coin Flip", prob: 4 / 54 },
+                { name: "Pachinko", prob: 2 / 54 },
+                { name: "Cash Hunt", prob: 2 / 54 },
+                { name: "Crazy Time", prob: 1 / 54 }
+            ];
+
+            for (let i = 0; i < npuntate; i++) {
+                await animazioneSlot();
+
+                let rand = Math.random();
+                let sum = 0;
+                let selected = null;
+
+                for (let prob of probList) {
+                    sum += prob.prob;
+                    if (rand <= sum) {
+                        selected = prob;
+                        break;
+                    }
+                }
+
+                let imageSrc = "";
+                let altText = selected.name;
+
+                if (selected.name === "1") {
+                    imageSrc = "uno.PNG";
+                } else if (selected.name === "2") {
+                    imageSrc = "due.PNG";
+                } else if (selected.name === "5") {
+                    imageSrc = "cinque.PNG";
+                } else if (selected.name === "10") {
+                    imageSrc = "dieci.PNG";
+                } else if (selected.name === "Coin Flip") {
+                    imageSrc = "coinflip.png";
+                } else if (selected.name === "Pachinko") {
+                    imageSrc = "pachinko.png";
+                } else if (selected.name === "Cash Hunt") {
+                    imageSrc = "cashhunt.png";
+                } else if (selected.name === "Crazy Time") {
+                    imageSrc = "crazybonus.png";
+                }
+
+                resultDiv.innerHTML = `<img src="${imageSrc}" alt="${altText}">`;
+                await sleep(1000); // Pausa per mostrare il risultato
+
+                history.push(altText);
+                updateHistory();
+            }
+        }
+
+        // Funzione per tornare al gioco randomizzatore
+        function goBackToRandom() {
+            document.body.style.backgroundColor = '#a7c7e7'; // Ripristina il colore azzurro
+            history = []; // Resetta lo storico
+            updateHistory();
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('puntate').value = 1;
+        }
+
+        // Funzione per aggiornare lo storico delle puntate
+        function updateHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = ''; // Pulisci la lista esistente
+            history.forEach(puntata => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Puntata: ${puntata}`;
+                historyList.appendChild(listItem);
+            });
+        }
+
+        // Funzione per resettare il gioco
+        function restartGame() {
+            document.getElementById('puntate').value = 1;
+            document.getElementById('result').innerHTML = "";
+            history = []; // Resetta lo storico
+            updateHistory();
+        }
+    </script>
+
+</body>
+</html>

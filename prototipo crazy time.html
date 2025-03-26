@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randomizzatore Crazy Time</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2e3b4e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        button {
+            background-color: #ff6f61;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #ff4d3b;
+        }
+        #result {
+            font-size: 2em;
+            margin-top: 20px;
+            color: #fff;
+        }
+        img {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Inserisci l'immagine al posto del titolo -->
+    <img src="crazytime.png" alt="Randomizzatore Crazy Time">
+
+    <label for="puntate">Quante puntate vuoi fare?:</label>
+    <input type="number" id="puntate" min="1" max="100" value="1">
+
+    <button onclick="startGame()">Inizia il gioco</button>
+
+    <div id="result"></div>
+
+    <button onclick="restartGame()">Gioca di nuovo</button>
+
+    <script>
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function animazioneSlot() {
+            let resultDiv = document.getElementById('result');
+            let animazione = ['1', '2', '3', '4', '5', '6', '7', '8'];
+            for (let i = 0; i < 5; i++) {
+                let num = animazione[Math.floor(Math.random() * animazione.length)];
+                resultDiv.innerHTML = num;
+                await sleep(200);
+            }
+        }
+
+        async function startGame() {
+            let npuntate = parseInt(document.getElementById('puntate').value);
+            let resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "Inizia il gioco...";
+
+            for (let i = 0; i < npuntate; i++) {
+                await animazioneSlot();
+                let puntata = Math.floor(Math.random() * 8) + 1;
+
+                let imageSrc = "";
+                let altText = "";
+
+                if (puntata === 3) {
+                    imageSrc = "cinque.PNG"; // Inserisci il percorso dell'immagine per la puntata 3
+                    altText = "5";
+                } else if (puntata === 4) {
+                    imageSrc = "dieci.PNG"; // Inserisci il percorso dell'immagine per la puntata 4
+                    altText = "10";
+                } else if (puntata === 5) {
+                    imageSrc = "coinflip.png"; // Inserisci il percorso dell'immagine per COIN FLIP
+                    altText = "COIN FLIP";
+                } else if (puntata === 6) {
+                    imageSrc = "pachinko.png"; // Inserisci il percorso dell'immagine per PACHINKO
+                    altText = "PACHINKO";
+                } else if (puntata === 7) {
+                    imageSrc = "cashhunt.png"; // Inserisci il percorso dell'immagine per CASH HUNT
+                    altText = "CASH HUNT";
+                } else if (puntata === 8) {
+                    imageSrc = "crazybonus.png"; // Inserisci il percorso dell'immagine per CRAZY TIME
+                    altText = "CRAZY TIME";
+                } else if (puntata === 2) {
+                    imageSrc = "due.PNG"; // Inserisci il percorso dell'immagine per la puntata 2
+                    altText = "2";
+                } else if (puntata === 1) {
+                    imageSrc = "uno.PNG"; // Inserisci il percorso dell'immagine per la puntata 1
+                    altText = "1";
+                }
+
+                // Mostra l'immagine
+                resultDiv.innerHTML = `<img src="${imageSrc}" alt="${altText}">`;
+                await sleep(1000); // Pausa per mostrare il risultato
+            }
+        }
+
+        function restartGame() {
+            document.getElementById('puntate').value = 1;
+            document.getElementById('result').innerHTML = "";
+        }
+    </script>
+
+</body>
+</html>
